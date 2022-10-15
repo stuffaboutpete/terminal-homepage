@@ -1,0 +1,115 @@
+name: Deploy Production
+
+env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+on:
+    push:
+        branches:
+          - main
+
+jobs:
+    build-infrastructure:
+        name: Build Infrastructure
+        runs-on: ubuntu-latest
+        steps:
+          - name: Set up SSH key
+            uses: webfactory/ssh-agent@v0.5.4
+            with:
+                ssh-private-key: ${{ secrets.SSH_KEY }}
+          - name: Checkout code
+            uses: actions/checkout@v2
+          - name: Run CloudFormation
+            run: >
+                sam deploy
+                --stack-name Terminal-Homepage-$(echo ${GITHUB_SHA} | cut -c1-7)
+                --s3-bucket terminal-homepage-sam-deployment-artifacts
+                --template-file infrastructure/ephemeral.yml
+                --capabilities CAPABILITY_IAM
+                --region us-east-1
+                --no-confirm-changeset
+                --parameter-overrides
+                CommitHash=$(echo ${GITHUB_SHA} | cut -c1-7)
+                IsProduction=True
+    update-production-infrastructure:
+        name: Update Production Infrastructure
+        needs: build-infrastructure
+        runs-on: ubuntu-latest
+        steps:
+          - name: Set up SSH key
+            uses: webfactory/ssh-agent@v0.5.4
+            with:
+                ssh-private-key: ${{ secrets.SSH_KEY }}
+          - name: Checkout code
+            uses: actions/checkout@v2
+          - name: Run CloudFormation
+            run: >
+                sam deploy
+                --stack-name Terminal-Homepage-Production
+                --s3-bucket terminal-homepage-sam-deployment-artifacts
+                --template-file infrastructure/production.yml
+                --capabilities CAPABILITY_IAM
+                --region us-east-1
+                --no-confirm-changeset
+                --parameter-overrides CommitHash=$(echo ${GITHUB_SHA} | cut -c1-7)
+    build-source:
+        name: Build Source
+        runs-on: ubuntu-latest
+        steps:
+          - name: Set up SSH key
+            uses: webfactory/ssh-agent@v0.5.4
+            with:
+                ssh-private-key: ${{ secrets.SSH_KEY }}
+          - name: Checkout code
+            uses: actions/checkout@v2
+          - name: Install dependencies
+            run: npm ci
+          - name: Create source code preview URL
+            run: >
+                echo
+                "SOURCE_CODE_PREVIEW_URL=https://raw.githubusercontent.com/stuffaboutpete/terminal-homepage/main"
+                >> $GITHUB_ENV
+          - name: Build source code preview
+            run: cd src/directory-structure && node ./build.js
+          - name: Build static assets
+            run: ./node_modules/.bin/webpack
+          - name: Upload static assets
+            uses: actions/upload-artifact@v3
+            with:
+                name: static-assets
+                path: build
+    deploy:
+        name: Deploy
+        needs: [build-infrastructure, update-production-infrastructure, build-source]
+        runs-on: ubuntu-latest
+        steps:
+          - name: Download static assets
+            uses: actions/download-artifact@v3
+            with:
+                name: static-assets
+                path: build
+          - name: Deploy static assets
+            run: >
+                aws s3 sync
+                build
+                s3://terminal-homepage-$(echo ${GITHUB_SHA} | cut -c1-7)
+                --delete
+                --region us-east-1
+    invalidate-cache:
+        name: Invalidate Cache
+        needs: deploy
+        runs-on: ubuntu-latest
+        steps:
+          - name: Invalidate cache
+            run: >
+                aws cloudfront create-invalidation
+                --distribution-id
+                $(
+                aws cloudformation describe-stacks
+                --stack-name Terminal-Homepage-Production
+                --region us-east-1
+                | jq -r '.Stacks[0].Outputs | map(select(.OutputKey == "CloudFrontDistribution")) | .[0].OutputValue'
+                )
+                --paths "/*"
+                --region us-east-1

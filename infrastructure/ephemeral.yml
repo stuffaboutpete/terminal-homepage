@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+    CommitHash:
+        Type: String
+    IsProduction:
+        Type: String
+        AllowedValues: ["True", "False"]
+
+Conditions:
+    IsNotProduction: !Equals [ "False", !Ref IsProduction ]
+
+Resources:
+    RecordSet:
+        Type: AWS::Route53::RecordSet
+        Condition: IsNotProduction
+        Properties:
+            Name: !Join [ "", [ !Ref CommitHash, ".", !ImportValue PeteSmithIODomain ] ]
+            HostedZoneId: !ImportValue PeteSmithIOHostedZone
+            Type: A
+            AliasTarget:
+                DNSName: !GetAtt CloudFrontDistribution.DomainName
+                HostedZoneId: Z2FDTNDATAQYW2
+    Bucket:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: !Join [ "", [ "terminal-homepage-", !Ref CommitHash ] ]
+            AccessControl: PublicRead
+            WebsiteConfiguration:
+                IndexDocument: index.html
+                ErrorDocument: error.html
+    BucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+            Bucket: !Ref Bucket
+            PolicyDocument:
+                Statement:
+                    Sid: PublicReadGetObject
+                    Effect: Allow
+                    Principal: "*"
+                    Action: s3:GetObject
+                    Resource: !Join [ "", [ "arn:aws:s3:::", !Ref Bucket, "/*" ] ]
+    CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Condition: IsNotProduction
+        Properties:
+            DistributionConfig:
+                Enabled: true
+                DefaultRootObject: index.html
+                Origins:
+                  - Id: Bucket
+                    DomainName: !Join [ "", [ !Ref Bucket, ".s3.us-east-1.amazonaws.com" ] ]
+                    S3OriginConfig: {}
+                Aliases:
+                  - !Join [ "", [ !Ref CommitHash, ".", !ImportValue PeteSmithIODomain ] ]
+                ViewerCertificate:
+                    AcmCertificateArn: !ImportValue PeteSmithIOWildcardCertificate
+                    SslSupportMethod: sni-only
+                    MinimumProtocolVersion: TLSv1
+                DefaultCacheBehavior:
+                    TargetOriginId: Bucket
+                    ViewerProtocolPolicy: redirect-to-https
+                    ForwardedValues:
+                        QueryString: true
+                PriceClass: PriceClass_100
+
+Outputs:
+    Bucket:
+        Value: !Ref Bucket
+        Export:
+            Name: !Join [ "", [ "Terminal-Homepage-Bucket-", !Ref CommitHash ] ]

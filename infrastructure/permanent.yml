@@ -1,0 +1,39 @@
+Resources:
+    HostedZone:
+        Type: AWS::Route53::HostedZone
+        Properties:
+            Name: petesmith.io
+    RootCertificate:
+        Type: AWS::CertificateManager::Certificate
+        Properties:
+            DomainName: petesmith.io
+            ValidationMethod: DNS
+            DomainValidationOptions:
+              - DomainName: petesmith.io
+                HostedZoneId: !Ref HostedZone
+    WildcardCertificate:
+        Type: AWS::CertificateManager::Certificate
+        Properties:
+            DomainName: "*.petesmith.io"
+            ValidationMethod: DNS
+            DomainValidationOptions:
+              - DomainName: petesmith.io
+                HostedZoneId: !Ref HostedZone
+
+Outputs:
+    Domain:
+        Value: petesmith.io
+        Export:
+            Name: PeteSmithIODomain
+    HostedZone:
+        Value: !Ref HostedZone
+        Export:
+            Name: PeteSmithIOHostedZone
+    RootCertificate:
+        Value: !Ref RootCertificate
+        Export:
+            Name: PeteSmithIORootCertificate
+    WildcardCertificate:
+        Value: !Ref WildcardCertificate
+        Export:
+            Name: PeteSmithIOWildcardCertificate

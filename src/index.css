@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #303b46;
+    background-size: cover;
+    background-position: center;
+    user-select: none;
+}

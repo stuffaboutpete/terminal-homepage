@@ -1,0 +1,11 @@
+.scrollable {
+    &--hiddenScrollBars {
+        .ps__rail-y {
+            opacity: 0 !important;
+        }
+    }
+
+    > *:first-child {
+        min-height: 100%;;
+    }
+}

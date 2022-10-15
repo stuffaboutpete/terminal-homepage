@@ -1,0 +1,64 @@
+.terminal {
+    background-color: #0c6a76b0;
+    color: white;
+    display: flex;
+    flex-direction: column;
+
+    pre {
+        margin: 0;
+    }
+
+    svg {
+        font-size: 0.65rem;
+        margin-right: 0.6rem;
+        margin-top: 0.2rem;
+    }
+
+    &-history {
+        padding: 1rem;
+        // padding-bottom: 2rem;
+    }
+
+    &-historyEntry:not(:last-child) {
+        margin-bottom: 2rem;
+    }
+
+    &-historyEntry > *:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+
+    &-historyError { // TODO Do we actually want this?
+        color: #ff8585;
+        font-weight: 600;
+    }
+
+    &-historyInput {
+        display: flex;
+    }
+
+    &-processing {
+        margin: -0.5rem 1rem 1rem 1rem;
+    }
+
+    &-processing,
+    textarea::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    &-input {
+        flex-grow: 1;
+        display: flex;
+        padding: 1rem;
+    }
+
+    textarea {
+        flex-grow: 1;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: inherit;
+        padding: 0;
+        font-size: inherit;
+        resize: none;
+    }
+}

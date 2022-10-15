@@ -1,0 +1,84 @@
+.window {
+    padding: 0.25em;
+    border-radius: 0.5em;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0px 0px 24px 0px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    color: white;
+
+    &-chrome {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 0.5em;
+        border-radius: 0.4em;
+    }
+
+    &--dark &-chrome {
+        background-color: #1b1b1bc7;
+    }
+
+    &--light &-chrome {
+        background-color: #d2d2d2b8;
+    }
+
+    &-chrome > :last-child {
+        flex-grow: 1;
+        margin-top: 0.5em;
+    }
+
+    &-titleBar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: move;
+    }
+
+    &-titleBar span {
+        font-family: 'Roboto';
+        font-size: 0.9rem;
+        font-weight: 300;
+        margin: auto;
+    }
+
+    &-buttons {
+        margin: 0.25em;
+        cursor: pointer;
+    }
+
+    &-buttons > *:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+
+    &--light &-buttons path {
+        // TODO If we create an Icon component,
+        // this would be handled there
+        fill: rgba(0, 0, 0, 0.5);
+    }
+
+    &-content {
+        position: relative;
+    }
+
+    &-content:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+    }
+
+    &--light &-content:after {
+        box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, 0.2);
+
+    }
+
+    &-content {
+        overflow: hidden;
+        border-radius: 0.2rem;
+    }
+}

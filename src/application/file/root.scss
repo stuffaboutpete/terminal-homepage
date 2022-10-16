@@ -1,0 +1,13 @@
+@use 'sass:math';
+
+.application-file-root {
+    background-color: rgba(0, 0, 0, 0.5);
+
+    pre {
+        margin: 0;
+        padding: 1rem;
+        background-color: transparent;
+        font-size: math.div(13, 16) * 1rem;
+        overflow: hidden;
+    }
+}

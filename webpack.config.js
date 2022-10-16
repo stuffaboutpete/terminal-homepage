@@ -24,8 +24,13 @@ module.exports = {
                             '@babel/preset-typescript'
                         ],
                         plugins: [
-                            "@babel/plugin-proposal-class-properties",
-                            "@babel/plugin-transform-runtime"
+                            '@babel/plugin-proposal-class-properties',
+                            '@babel/plugin-transform-runtime',
+                            ['prismjs', {
+                                languages: ['js', 'ts', 'tsx', 'json', 'css', 'scss', 'yml', 'md'],
+                                theme: 'okaidia',
+                                css: true
+                            }]
                         ]
                     }
                 }

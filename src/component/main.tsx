@@ -57,7 +57,7 @@ const Main = ({ state, dispatch }: Props) => (
                             })}
                         >
                             <Window
-                                title={application.windowTitle || applicationName}
+                                title={application.windowTitle ? application.windowTitle(instance.state) : applicationName}
                                 theme={state.theme}
                                 onClose={() => dispatch('CLOSE_WINDOW', applicationName)}
                             >

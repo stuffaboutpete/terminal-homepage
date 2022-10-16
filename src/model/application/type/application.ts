@@ -11,7 +11,7 @@ interface Application<ApplicationState extends {}, CanvasState extends {}> {
         error: boolean;
     }>;
     autoComplete?: (args: string[]) => string;
-    windowTitle?: string;
+    windowTitle?: (applicationState: ApplicationState) => string;
     renderWindow?: (toolkit: ApplicationToolkit<ApplicationState>) => JSX.Element;
     renderCanvas?: (toolkit: CanvasToolkit<CanvasState>) => CanvasState;
 };

@@ -1,5 +1,7 @@
 import ApplicationList from '../model/application/type/application-list';
 import changeDirectory from './change-directory';
+import file from './file';
+import files from './files';
 import help from './help';
 import intro from './intro';
 import listFiles from './list-files';
@@ -8,6 +10,8 @@ import viewFile from './view-file';
 
 const applications: ApplicationList = [
     changeDirectory,
+    file,
+    files,
     help,
     intro,
     listFiles,

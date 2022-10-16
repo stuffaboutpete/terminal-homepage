@@ -27,7 +27,7 @@ const terminal: Application<State, {}> = {
         };
     },
     renderWindow: Terminal,
-    windowTitle: 'Terminal'
+    windowTitle: () => 'Terminal'
 };
 
 export default terminal;

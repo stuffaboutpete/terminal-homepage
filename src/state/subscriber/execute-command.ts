@@ -26,9 +26,9 @@ const f: Subscriber = (action, payload, state, previousState, dispatch) => {
     if (!application) {
         dispatch('COMMAND_EXECUTION_COMPLETE', {
             output: [
-                'Unrecognised command.',
+                `Unrecognised command: $PURPLE$${payload}`,
                 '',
-                'You can run $HOTPINK$help$WHITE$ to see a list',
+                '$DEFAULT$You can run $YELLOW$help$DEFAULT$ to see a list',
                 'of available commands.'
             ].join('\n'),
             error: true

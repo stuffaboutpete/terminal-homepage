@@ -11,8 +11,8 @@ const listFiles: Application<{}, {}> = {
         const files = filesInDirectory(globalState.files)(globalState.currentDirectory);
         return {
             output: [
-                `Directory: ${globalState.currentDirectory}`,
-                '$CHARTREUSE$',
+                `Directory: $BLUE$${globalState.currentDirectory}`,
+                '$YELLOW$',
                 ...directories.map(append('/')),
                 ...files
             ].join('\n'),

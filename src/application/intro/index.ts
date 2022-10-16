@@ -5,8 +5,9 @@ const intro: Application<{}, {}> = {
     execute: async (args, toolkit) => {
         return {
             output: [
-                'Welcome to the homepage of Pete Smith.',
-                'More words and stuff',
+                '$BLUE$Welcome to the homepage of $YELLOW$Pete Smith.',
+                '',
+                '$DEFAULT$More words and stuff',
             ].join('\n'),
             error: false
         };

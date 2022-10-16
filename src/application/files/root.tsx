@@ -14,7 +14,7 @@ const Root = ({ applicationState, globalState, executeCommand, setState }: Appli
     const directories = directoriesInDirectory(globalState.files)(currentDirectory);
     const files = filesInDirectory(globalState.files)(currentDirectory);
     return (
-        <div className="application-files-root">
+        <div className={`application-files-root application-files-root--${globalState.theme}`}>
             <ul className="application-files-root-path">
                 {currentDirectory !== '/' && parentDirectories(currentDirectory).map((directory, index) => (
                     <li key={index}>

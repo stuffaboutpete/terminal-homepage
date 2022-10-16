@@ -1,8 +1,31 @@
 .terminal {
-    background-color: #0c6a76b0;
-    color: white;
+    color: var(--default);
     display: flex;
     flex-direction: column;
+
+    &--darkTheme {
+        background-color: #0c6a76b0;
+        --red: #ff8383;
+        --red-weight: bold;
+        --green: #73fe3f;
+        --yellow: #ffe14f;
+        --blue: #47cbff;
+        --blue-weight: bold;
+        --purple: #f38ef3;
+        --cyan: #00ffff;
+        --default: #d8f5f8;
+    }
+
+    &--lightTheme {
+        background-color: #0c6a76d6;
+        --red: #ffadc7;
+        --green: #49ff38;
+        --yellow: #ffd400;
+        --blue: #47eaff;
+        --purple: #ffb0ff;
+        --cyan: #7de6e6;
+        --default: white;
+    }
 
     pre {
         margin: 0;
@@ -16,7 +39,6 @@
 
     &-history {
         padding: 1rem;
-        // padding-bottom: 2rem;
     }
 
     &-historyEntry:not(:last-child) {
@@ -27,9 +49,9 @@
         margin-bottom: 0.5rem;
     }
 
-    &-historyError { // TODO Do we actually want this?
-        color: #ff8585;
-        font-weight: 600;
+    &-historyError {
+        color: var(--red);
+        font-weight: var(--red-weight);
     }
 
     &-historyInput {
@@ -56,9 +78,44 @@
         background-color: transparent;
         border: none;
         outline: none;
-        color: inherit;
+        color: var(--default);
         padding: 0;
         font-size: inherit;
         resize: none;
+    }
+
+    &-coloredText--red {
+        color: var(--red);
+        font-weight: var(--red-weight);
+    }
+
+    &-coloredText--green {
+        color: var(--green);
+        font-weight: var(--green-weight);
+    }
+
+    &-coloredText--yellow {
+        color: var(--yellow);
+        font-weight: var(--yellow-weight);
+    }
+
+    &-coloredText--blue {
+        color: var(--blue);
+        font-weight: var(--blue-weight);
+    }
+
+    &-coloredText--purple {
+        color: var(--purple);
+        font-weight: var(--purple-weight);
+    }
+
+    &-coloredText--cyan {
+        color: var(--cyan);
+        font-weight: var(--cyan-weight);
+    }
+
+    &-coloredText--default {
+        color: var(--default);
+        font-weight: var(--default-weight);
     }
 }

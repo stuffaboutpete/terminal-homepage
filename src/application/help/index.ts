@@ -4,13 +4,13 @@ const help: Application<{}, {}> = {
     name: 'help',
     execute: async () => {
         const startOutput = [
-            '🙂 No problem...',
+            '🙂 $BLUE$No problem...',
             '',
-            'This website is a terminal which means you',
+            '$DEFAULT$This website is a $YELLOW$terminal$DEFAULT$ which means you',
             'can run commands by typing them here and',
-            'pressing enter',
+            'pressing $PURPLE$enter',
             '',
-            'Here is a list of commands you can run:',
+            '$DEFAULT$Here is a list of commands you can run:',
             '',
             ''
         ].join('\n');
@@ -30,8 +30,8 @@ const help: Application<{}, {}> = {
         ];
         const commandOutput = commands.reduce((out, next) => {
             const [command, ...aliases] = next;
-            const aliasesOutput = aliases.map(alias => `$CADETBLUE$or $DARKTURQUOISE$${alias}`).join(' ');
-            return out + `$DARKTURQUOISE$${command}${aliases.length > 0 ? `$CADETBLUE$ (${aliasesOutput}$CADETBLUE$)` : ''}\n`;
+            const aliasesOutput = aliases.map(alias => `$DEFAULT$or $YELLOW$${alias}`).join(' ');
+            return out + `$YELLOW$${command}${aliases.length > 0 ? `$DEFAULT$ (${aliasesOutput}$DEFAULT$)` : ''}\n`;
         }, '');
         return {
             output: startOutput + commandOutput,

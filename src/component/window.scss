@@ -20,7 +20,7 @@
     }
 
     &--light &-chrome {
-        background-color: #d2d2d2b8;
+        background-color: #ffffffbf;
     }
 
     &-chrome > :last-child {
@@ -40,6 +40,14 @@
         font-size: 0.9rem;
         font-weight: 300;
         margin: auto;
+    }
+
+    &--dark &-titleBar {
+        color: white;
+    }
+
+    &--light &-titleBar {
+        color: black;
     }
 
     &-buttons {

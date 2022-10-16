@@ -20,12 +20,12 @@ const file: Application<State, {}> = {
         }
 
         if (args.length > 1) {
-            output.push(`$RED$Ignoring arguments: ${args.slice(1).join(', ')}$WHITE$`, '');
+            output.push(`$BLUE$Ignoring arguments: $YELLOW$${args.slice(1).join('$DEFAULT$,$YELLOW$ ')}$DEFAULT$`, '');
         }
 
         if (args.length >= 1) {
             if (!isFile(globalState.files)(targetFile)) {
-                output.push(`File does not exist: ${targetFile}`);
+                output.push(`$RED$File does not exist: $YELLOW$${targetFile}`);
                 error = true;
             } else {
                 setState({
@@ -33,7 +33,7 @@ const file: Application<State, {}> = {
                     fileContents: undefined
                 });
                 openWindow();
-                output.push(`Opening file: ${targetFile}`);
+                output.push(`$GREEN$Opening file: $YELLOW$${targetFile}`);
                 const response = fetch(`${process.env.SOURCE_CODE_PREVIEW_URL}${targetFile}`);
                 response.then(response => {
                     response.text().then(fileContents => {

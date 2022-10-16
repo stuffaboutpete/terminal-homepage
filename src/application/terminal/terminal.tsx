@@ -21,7 +21,10 @@ const Terminal = ({ globalState, applicationState, setState, executeCommand }: A
     const commandHistory = globalState.commandHistory.filter(historyEntry => historyEntry.input !== 'terminal');
 
     return (
-        <div className="terminal" onClick={() => inputRef.current?.focus()}>
+        <div
+            className={`terminal terminal--${globalState.theme}Theme`}
+            onClick={() => inputRef.current?.focus()}
+        >
             {commandHistory.length > 0 && (
                 <div className="terminal-history">
                     {commandHistory.map((entry, index) => (
@@ -39,8 +42,8 @@ const Terminal = ({ globalState, applicationState, setState, executeCommand }: A
                                         // TODO Too much logic
                                         const match = part.match(/\$([A-Z]+)\$((?:.|\n)+)/);
                                         return (match)
-                                            ? <span key={index} style={{ color: match[1] }}>{match[2]}</span>
-                                            : part;
+                                            ? <span key={index} className={`terminal-coloredText--${match[1].toLowerCase()}`}>{match[2]}</span>
+                                            : <span className="terminal-coloredText--white">{part}</span>;
                                     })}
                                 </pre>
                             )}

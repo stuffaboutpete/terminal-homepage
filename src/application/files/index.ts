@@ -20,7 +20,7 @@ const files: Application<State, {}> = {
         openWindow();
 
         return {
-            output: 'Opening...',
+            output: `$GREEN$Opening files $DEFAULT$at directory: $YELLOW$${targetDirectory}`,
             error: false
         };
     },

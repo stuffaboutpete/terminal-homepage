@@ -12,16 +12,17 @@ const viewFile: Application<{}, {}> = {
 
         if (args.length === 0) {
             output.push(
-                'Please provide a file to view.',
-                'To see the current directory run $HOTPINK$list-files$WHITE$.',
+                '$BLUE$Please provide a file to view.',
                 '',
-                'Example: $HOTPINK$view-file src/index.tsx'
+                '$DEFAULT$To see the current directory run $YELLOW$list-files$DEFAULT$.',
+                '',
+                'Example: $CYAN$view-file src/index.tsx'
             );
             error = true;
         }
 
         if (args.length > 1) {
-            output.push(`$RED$Ignoring arguments: ${args.slice(1).join(', ')}$WHITE$`, '');
+            output.push(`$RED$Ignoring arguments: $YELLOW$${args.slice(1).join('$DEFAULT$,$YELLOW$ ')}$DEFAULT$`, '');
         }
 
         if (args.length >= 1) {
@@ -31,9 +32,13 @@ const viewFile: Application<{}, {}> = {
             if (isFile(globalState.files)(targetFile)) {
                 const response = await fetch(`${process.env.SOURCE_CODE_PREVIEW_URL}${targetFile}`);
                 const fileContents = await response.text();
-                output.push(fileContents);
+                output.push(
+                    `$GREEN$Showing contents of: $YELLOW$${targetFile}`,
+                    '',
+                    `$BLUE$${fileContents}`
+                );
             } else {
-                output.push(`File does not exist: ${targetFile}`);
+                output.push(`$BLUE$File does not exist: $PURPLE$${targetFile}`);
                 error = true;
 
             }

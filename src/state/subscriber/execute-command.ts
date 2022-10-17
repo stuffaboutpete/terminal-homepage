@@ -24,9 +24,23 @@ const f: Subscriber = (action, payload, state, previousState, dispatch) => {
     }
 
     if (!application) {
-        dispatch('COMMAND_EXECUTION_COMPLETE', {
+        try {
+            const output = JSON.stringify(eval(command), null, 4);
+            if (output !== undefined && output !== command) {
+                dispatch(
+                    'COMMAND_EXECUTION_COMPLETE',
+                    {
+                        output: `$BLUE$${output}`,
+                        error: false
+                    }
+                );
+                return;
+            }
+        } catch (error) {}
+
+         dispatch('COMMAND_EXECUTION_COMPLETE', {
             output: [
-                `Unrecognised command: $PURPLE$${payload}`,
+                `Unrecognised command: $PURPLE$${command}`,
                 '',
                 '$DEFAULT$You can run $YELLOW$help$DEFAULT$ to see a list',
                 'of available commands.'

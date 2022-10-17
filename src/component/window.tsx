@@ -19,14 +19,14 @@ const Window = (props: Props) => {
                 <div className="window-titleBar">
                     <span>{props.title}</span>
                     <div className="window-buttons">
-                        {props.onClose && (
-                            <div className="window-closeButton" onClick={() => props.onClose && props.onClose()}>
-                                <FontAwesomeIcon icon={faTimesCircle} />
-                            </div>
-                        )}
                         {props.onHelp && (
                             <div className="window-helpButton" onClick={() => props.onHelp && props.onHelp()}>
                                 <FontAwesomeIcon icon={faQuestionCircle} />
+                            </div>
+                        )}
+                        {props.onClose && (
+                            <div className="window-closeButton" onClick={() => props.onClose && props.onClose()}>
+                                <FontAwesomeIcon icon={faTimesCircle} />
                             </div>
                         )}
                     </div>

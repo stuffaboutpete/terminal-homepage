@@ -26,6 +26,23 @@ const terminal: Application<State, {}> = {
             error: false
         };
     },
+    onHelpButton: ({ setState, executeCommand, applicationState }) => {
+        setTimeout(() => setState({ input: 'h' }), 0);
+        setTimeout(() => setState({ input: 'he' }), 100);
+        setTimeout(() => setState({ input: 'hel' }), 200);
+        setTimeout(() => setState({ input: 'help' }), 300);
+        setTimeout(() => {
+            executeCommand('help');
+            setState({
+                input: '',
+                history: [
+                    ...applicationState.history,
+                    'help'
+                ],
+                historyPointer: applicationState.historyPointer + 1
+            });
+        }, 700);
+    },
     renderWindow: Terminal,
     windowTitle: () => 'Terminal'
 };

@@ -35,6 +35,7 @@ const Main = ({ state, dispatch }: Props) => (
             const application = fromList(applications, applicationName);
             if (application === undefined) return;
 
+            const toolkit = applicationToolkit(state, dispatch, applicationName);
             const WindowContent = application.renderWindow;
 
             return (
@@ -59,9 +60,10 @@ const Main = ({ state, dispatch }: Props) => (
                             <Window
                                 title={application.windowTitle ? application.windowTitle(instance.state) : applicationName}
                                 theme={state.theme}
-                                onClose={() => dispatch('CLOSE_WINDOW', applicationName)}
+                                onClose={applicationName !== 'terminal' ? () => dispatch('CLOSE_WINDOW', applicationName) : undefined}
+                                onHelp={application.onHelpButton ? () => application.onHelpButton(toolkit) : undefined}
                             >
-                                <WindowContent {...applicationToolkit(state, dispatch, applicationName)} />
+                                <WindowContent {...toolkit} />
                             </Window>
                         </div>
                     )}

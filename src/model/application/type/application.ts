@@ -14,6 +14,7 @@ interface Application<ApplicationState extends {}, CanvasState extends {}> {
     windowTitle?: (applicationState: ApplicationState) => string;
     renderWindow?: (toolkit: ApplicationToolkit<ApplicationState>) => JSX.Element;
     renderCanvas?: (toolkit: CanvasToolkit<CanvasState>) => CanvasState;
+    onHelpButton?: (toolkit: ApplicationToolkit<ApplicationState>) => void;
 };
 
 export default Application;

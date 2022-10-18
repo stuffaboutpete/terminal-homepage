@@ -40,6 +40,10 @@ class StateManager extends React.Component<{}, State> {
     }
 
     private dispatch<A extends Action>(action: A, payload: Payload<A>): void {
+        if (action === 'ACTIVATE_CANVAS' || action === 'UPDATE_CANVAS_STATE') {
+            this.handleCanvasAction(action, payload);
+        }
+
         const previousState = this.state;
         const newState = this.reduce(this.state, action, payload);
 
@@ -62,6 +66,24 @@ class StateManager extends React.Component<{}, State> {
         ), state);
     }
 
+    private handleCanvasAction<A extends Action>(action: A, payload: Payload<A>): void {
+        if (action === 'ACTIVATE_CANVAS') {
+            const applicationName = payload as Payload<'ACTIVATE_CANVAS'>;
+            if (!this.canvasStates[applicationName]) {
+                this.canvasStates[applicationName] = fromList(applications, applicationName).defaultCanvasState;
+            }
+            this.canvasStates
+        }
+
+        if (action === 'UPDATE_CANVAS_STATE') {
+            const { applicationName, state } = payload as Payload<'UPDATE_CANVAS_STATE'>;
+            this.canvasStates[applicationName] = {
+                ...this.canvasStates[applicationName],
+                ...state
+            };
+        }
+    }
+
     // TODO Finish thinking this through
     private renderCanvases(): void {
         Object.keys(this.state.applicationInstances).forEach(applicationName => {
@@ -71,12 +93,14 @@ class StateManager extends React.Component<{}, State> {
             const application = fromList(applications, applicationName);
             if (!application || !application.renderCanvas) return;
 
+            // TODO Cache these
             const canvas = document.querySelector(`canvas#${applicationName}`);
 
             const newState = application.renderCanvas(canvasToolkit(
                 this.state,
-                this.canvasStates[applicationName] || application.defaultState, // TODO No
-                canvas as HTMLCanvasElement
+                this.canvasStates[applicationName],
+                canvas as HTMLCanvasElement,
+                () => this.dispatch('DEACTIVATE_CANVAS', applicationName)
             ));
 
             this.canvasStates[applicationName] = newState;

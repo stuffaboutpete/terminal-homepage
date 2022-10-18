@@ -5,14 +5,16 @@ import globalState from './global-state';
 type T = <CanvasState extends {}>(
     globalState: State,
     canvasState: CanvasState,
-    canvas: HTMLCanvasElement
+    canvas: HTMLCanvasElement,
+    deactivateCanvas: () => void
 ) => CanvasToolkit<CanvasState>;
 
-const f: T = (state, canvasState, canvas) => ({
+const f: T = (state, canvasState, canvas, deactivateCanvas) => ({
     globalState: globalState(state),
     canvasState,
     canvas,
-    context: canvas.getContext('2d') as CanvasRenderingContext2D
+    context: canvas.getContext('2d') as CanvasRenderingContext2D,
+    deactivateCanvas
 });
 
 export default f;

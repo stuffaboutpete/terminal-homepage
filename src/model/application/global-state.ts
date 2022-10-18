@@ -11,7 +11,7 @@ const f: T = state => ({
     browserSize: state.browserSize,
     isProcessingCommand: state.isProcessingCommand,
     commandHistory: state.commandHistory,
-    applicationPositions: Object.keys(state.applicationInstances)
+    windowPositions: Object.keys(state.applicationInstances)
         .map(applicationName => state.applicationInstances[applicationName].window)
         .filter(window => window !== undefined)
         .map(window => {

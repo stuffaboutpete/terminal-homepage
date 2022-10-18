@@ -22,8 +22,10 @@ export default actionReducer('OPEN_WINDOW', (state, payload) => {
         .pop();
 
     if (!application.window) {
-        const width = Math.min(state.browserSize.width - 200, 920);
-        const height = Math.min(state.browserSize.height - 200, 700);
+        const widthMargin = state.browserSize.width / 5;
+        const heightMargin = state.browserSize.height / 5;
+        const width = Math.min(state.browserSize.width - widthMargin, 920);
+        const height = Math.min(state.browserSize.height - heightMargin, 700);
         let x = (state.browserSize.width - width) / 2;
         let y = (state.browserSize.height - height) / 2;
 

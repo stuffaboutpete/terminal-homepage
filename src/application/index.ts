@@ -7,6 +7,7 @@ import files from './files';
 import help from './help';
 import intro from './intro';
 import listFiles from './list-files';
+import matrix from './matrix';
 import terminal from './terminal';
 import viewFile from './view-file';
 
@@ -19,6 +20,7 @@ const applications: ApplicationList = [
     help,
     intro,
     listFiles,
+    matrix,
     terminal,
     viewFile
 ];

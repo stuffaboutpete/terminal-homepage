@@ -21,7 +21,7 @@ interface GlobalState {
     browserSize: State['browserSize'];
     isProcessingCommand: State['isProcessingCommand'];
     commandHistory: State['commandHistory'];
-    applicationPositions: Rectange[];
+    windowPositions: Rectange[];
 }
 
 export default GlobalState;

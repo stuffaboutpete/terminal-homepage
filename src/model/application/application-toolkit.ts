@@ -3,11 +3,11 @@ import Dispatch from '../../state/type/dispatch';
 import ApplicationToolkit from './type/application-toolkit';
 import globalState from './global-state';
 
-type T = <ApplicationState extends {}>(
+type T = <ApplicationState extends {}, CanvasState extends {}>(
     state: State,
     dispatch: Dispatch,
     applicationName: string
-) => ApplicationToolkit<ApplicationState>;
+) => ApplicationToolkit<ApplicationState, CanvasState>;
 
 // TODO TypeScript error
 const f: T = (state, dispatch, applicationName) => {
@@ -25,6 +25,10 @@ const f: T = (state, dispatch, applicationName) => {
                 ...applicationState,
                 ...newState
             }
+        }),
+        setCanvasState: (newState: {}) => dispatch('UPDATE_CANVAS_STATE', {
+            applicationName,
+            state: newState
         }),
         executeCommand: (command: string) => dispatch('EXECUTE_COMMAND', command),
         changeDirectory: (directory: string) => dispatch('CHANGE_DIRECTORY', directory),

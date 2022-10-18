@@ -5,6 +5,7 @@ interface CanvasToolkit<CanvasState extends {}> {
     canvasState: CanvasState;
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
+    deactivateCanvas: () => void;
 }
 
 export default CanvasToolkit;

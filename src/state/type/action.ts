@@ -29,6 +29,10 @@ export interface ActionPayloadMap {
         applicationName: string;
         state: {};
     };
+    UPDATE_CANVAS_STATE: {
+        applicationName: string;
+        state: {};
+    }
     CHANGE_DIRECTORY: string;
     SET_THEME: 'light' | 'dark' | 'auto';
     SET_BACKGROUND: number;

@@ -13,15 +13,15 @@ const changeDirectory: Application<{}, {}> = {
         if (args.length === 0) {
             output.push(
                 'Please provide a directory to change to.',
-                'To see the current directory run $HOTPINK$list-files$WHITE$.',
+                'To see the current directory run $YELLOW$list-files.',
                 '',
-                'Example: $HOTPINK$change-directory src'
+                `$CYAN$Example: $PURPLE$change-directory src`
             );
             error = true;
         }
 
         if (args.length > 1) {
-            output.push(`$RED$Ignoring arguments: ${args.slice(1).join(', ')}$WHITE$`, '');
+            output.push(`Ignoring arguments: $PURPLE$${args.slice(1).join(', ')}$DEFAULT$`, '');
         }
 
         if (args.length >= 1) {
@@ -39,9 +39,9 @@ const changeDirectory: Application<{}, {}> = {
             }
             if (isDirectory(globalState.files)(targetDirectory)) {
                 changeDirectory(targetDirectory);
-                output.push(`Changing directory to $HOTPINK$${targetDirectory}`);
+                output.push(`$GREEN$Changing directory to $BLUE$${targetDirectory}`);
             } else {
-                output.push(`Directory does not exist: ${targetDirectory}`);
+                output.push(`$BLUE$Directory does not exist: $PURPLE$${targetDirectory}`);
                 error = true;
             }
         }

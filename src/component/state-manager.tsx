@@ -14,6 +14,7 @@ import fromList from '../model/application/from-list';
 import canvasToolkit from '../model/application/canvas-toolkit';
 
 class StateManager extends React.Component<{}, State> {
+    private canvases: Record<ApplicationName, HTMLCanvasElement> = {};
     private canvasStates: Record<ApplicationName, {}> = {};
 
     public constructor(props: {}) {
@@ -40,7 +41,7 @@ class StateManager extends React.Component<{}, State> {
     }
 
     private dispatch<A extends Action>(action: A, payload: Payload<A>): void {
-        if (action === 'ACTIVATE_CANVAS' || action === 'UPDATE_CANVAS_STATE') {
+        if (action === 'ACTIVATE_CANVAS' || action === 'DEACTIVATE_CANVAS' || action === 'UPDATE_CANVAS_STATE') {
             this.handleCanvasAction(action, payload);
         }
 
@@ -72,7 +73,11 @@ class StateManager extends React.Component<{}, State> {
             if (!this.canvasStates[applicationName]) {
                 this.canvasStates[applicationName] = fromList(applications, applicationName).defaultCanvasState;
             }
-            this.canvasStates
+        }
+
+        if (action === 'DEACTIVATE_CANVAS') {
+            const applicationName = payload as Payload<'DEACTIVATE_CANVAS'>;
+            delete this.canvases[applicationName];
         }
 
         if (action === 'UPDATE_CANVAS_STATE') {
@@ -93,8 +98,7 @@ class StateManager extends React.Component<{}, State> {
             const application = fromList(applications, applicationName);
             if (!application || !application.renderCanvas) return;
 
-            // TODO Cache these
-            const canvas = document.querySelector(`canvas#${applicationName}`);
+            const canvas = this.getCanvas(applicationName);
 
             const newState = application.renderCanvas(canvasToolkit(
                 this.state,
@@ -106,6 +110,13 @@ class StateManager extends React.Component<{}, State> {
             this.canvasStates[applicationName] = newState;
         });
         requestAnimationFrame(this.renderCanvases.bind(this));
+    }
+
+    private getCanvas(applicationName: ApplicationName): HTMLCanvasElement {
+        if (!this.canvases[applicationName]) {
+            this.canvases[applicationName] = document.querySelector(`canvas#${applicationName}`)!;
+        }
+        return this.canvases[applicationName];
     }
 }
 

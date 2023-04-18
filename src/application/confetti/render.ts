@@ -2,6 +2,7 @@ import CanvasToolkit from '../../model/application/type/canvas-toolkit';
 import State from './type/state';
 import loadImages from './load-images';
 import createParticle from './create-particle';
+import projectile from './projectile';
 import circleIsInsideRectangle from './circle-is-inside-rectangle';
 
 let images: HTMLImageElement[] | undefined = undefined;
@@ -12,6 +13,7 @@ type T = (canvasToolkit: CanvasToolkit<State>) => State;
 const f: T = ({ canvas, context, canvasState, globalState, deactivateCanvas }) => {
     if (!images) return canvasState;
 
+    // TODO Surely should be able to access current window position
     const terminal = globalState.windowPositions[0];
 
     const window = {
@@ -28,7 +30,6 @@ const f: T = ({ canvas, context, canvasState, globalState, deactivateCanvas }) =
         particles = [
             ...particles,
             createParticle(
-                playground,
                 window,
                 14,
                 3,
@@ -41,12 +42,23 @@ const f: T = ({ canvas, context, canvasState, globalState, deactivateCanvas }) =
     canvas.width = playground.width;
     canvas.height = playground.height;
 
+    const now = performance.now();
+
     for (let i = 0; i < particles.length; i++) {
         const particle = particles[i];
 
         const image = images[particle.image];
-        const x = particle.x - (image.width / 2);
-        const y = particle.y - (image.height / 2);
+
+        let { x, y } = projectile(
+            particle.launchAngle,
+            particle.initialVelocty,
+            (now - particle.timeOfBirth) / 1000
+        );
+
+        x += particle.initialPosition.x;
+        y += particle.initialPosition.y;
+        x -= image.width / 2;
+        y -= image.height / 2;
 
         context.save();
 
@@ -74,21 +86,15 @@ const f: T = ({ canvas, context, canvasState, globalState, deactivateCanvas }) =
             context.clip();
         }
 
-        context.translate(particle.x - image.width / 2, particle.y - image.height / 2);
+        context.translate(x, y);
         context.rotate(particle.rotation * Math.PI / 180); // TODO Degrees to radians function
         context.drawImage(image, image.width / -2, image.height / -2);
         context.restore();
 
-        particle.yVelocity += 3;
-        particle.xVelocity *= 0.97;
-        particle.rotationVelocity *= 0.98;
-        if (particle.yVelocity > 10) particle.yVelocity = 10;
-        particle.x += particle.xVelocity;
-        particle.y += particle.yVelocity;
-        particle.rotation += particle.rotationVelocity;
+        if (y > playground.height + safeOffset) particle.endOfLife = true;
     }
 
-    particles = particles.filter(particle => particle.y < playground.height + safeOffset);
+    particles = particles.filter(particle => particle.endOfLife !== true);
 
     if (particles.length === 0 && futureParticleCount === 0) {
         deactivateCanvas();

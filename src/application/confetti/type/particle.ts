@@ -1,12 +1,14 @@
+import Point from './point';
+
 interface Particle {
     image: number;
-    x: number;
-    y: number;
-    xVelocity: number;
-    yVelocity: number;
+    timeOfBirth: number;
+    initialPosition: Point;
+    initialVelocty: number;
+    launchAngle: number;
     rotation: number;
-    rotationVelocity: number;
     masked: boolean;
+    endOfLife: boolean;
 };
 
 export default Particle;

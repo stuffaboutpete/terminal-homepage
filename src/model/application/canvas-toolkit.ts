@@ -14,7 +14,9 @@ const f: T = (state, canvasState, canvas, deactivateCanvas) => ({
     canvasState,
     canvas,
     context: canvas.getContext('2d') as CanvasRenderingContext2D,
-    deactivateCanvas
+    messageApplication: () => {},
+    deactivateCanvas,
+    exit: () => {}
 });
 
 export default f;

@@ -58,11 +58,6 @@
         display: flex;
     }
 
-    &-processing {
-        margin: -0.5rem 1rem 1rem 1rem;
-    }
-
-    &-processing,
     textarea::placeholder {
         color: rgba(255, 255, 255, 0.3);
     }

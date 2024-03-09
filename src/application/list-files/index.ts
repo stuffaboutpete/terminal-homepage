@@ -6,7 +6,7 @@ import directoriesInDirectory from '../../model/file-system/directories-in-direc
 const listFiles: Application<{}, {}> = {
     name: 'list-files',
     aliases: ['ls', 'll'],
-    execute: async (args, { globalState }) => {
+    initialize: async (args, { globalState }) => {
         const directories = directoriesInDirectory(globalState.files)(globalState.currentDirectory);
         const files = filesInDirectory(globalState.files)(globalState.currentDirectory);
         return {

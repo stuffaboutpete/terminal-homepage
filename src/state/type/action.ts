@@ -1,3 +1,6 @@
+import ProcessID from '../../model/application/type/process-id';
+import GlobalState from '../../model/application/type/global-state';
+
 export interface ActionPayloadMap {
     INIT: undefined;
     BROWSER_SIZE_CHANGE: {
@@ -5,7 +8,7 @@ export interface ActionPayloadMap {
         height: number;
     }
     WINDOW_TOUCH: {
-        applicationName: string;
+        processId: ProcessID;
         position: {
             x: number;
             y: number;
@@ -16,26 +19,92 @@ export interface ActionPayloadMap {
         y: number;
     };
     WINDOW_TOUCH_END: undefined;
-    EXECUTE_COMMAND: string;
-    COMMAND_EXECUTION_COMPLETE: {
-        output: string;
-        error: boolean;
+    EXECUTE_COMMAND: {
+        newProcessId: ProcessID;
+        command: string;
+        ownerId: ProcessID;
+    }
+    ACTIVATE_WINDOW: {
+        processId: ProcessID;
+        title: string | undefined;
     };
-    OPEN_WINDOW: string;
-    CLOSE_WINDOW: string;
-    ACTIVATE_CANVAS: string;
-    DEACTIVATE_CANVAS: string;
-    UPDATE_APPLICATION_STATE: {
-        applicationName: string;
+    DEACTIVATE_WINDOW: ProcessID;
+    ACTIVATE_CANVAS: ProcessID;
+    DEACTIVATE_CANVAS: ProcessID;
+    UPDATE_PROCESS_STATE: {
+        processId: ProcessID;
         state: {};
     };
     UPDATE_CANVAS_STATE: {
-        applicationName: string;
+        processId: ProcessID;
         state: {};
     }
-    CHANGE_DIRECTORY: string;
     SET_THEME: 'light' | 'dark' | 'auto';
     SET_BACKGROUND: number;
+    SEND_CLI_INPUT: {
+        processId: ProcessID;
+        input: string;
+    };
+    PROCESS_OUTPUT: {
+        processId: ProcessID;
+        output: string;
+    }
+    PROCESS_EXIT: ProcessID;
+    PROCESS_ERROR: {
+        processId: ProcessID;
+        error: string;
+    };
+    PROCESS_DETACH: ProcessID;
+    PROCESS_REMOVE: ProcessID;
+    PROCESS_GUI_MESSAGE: {
+        processId: ProcessID;
+        message: unknown;
+    };
+    PROCESS_HELP_BUTTON: ProcessID;
+    MESSAGE_CHILD_PROCESS: {
+        childProcessId: ProcessID;
+        message: string;
+    }
+    PROCESS_GLOBAL_STATE_CHANGE_CALLBACK_REGISTERED: {
+        processId: ProcessID;
+        callback: (state: GlobalState) => void;
+    };
+    PROCESS_APPLICATION_STATE_CHANGE_CALLBACK_REGISTERED: {
+        processId: ProcessID;
+        callback: (state: any) => void; // TODO any
+    };
+    PROCESS_GUI_MESSAGE_CALLBACK_REGISTERED: {
+        processId: ProcessID;
+        callback: (message: unknown) => void;
+    };
+    PROCESS_HELP_BUTTON_CALLBACK_REGISTERED: {
+        processId: ProcessID;
+        callback: () => void;
+    };
+    PROCESS_INPUT_CALLBACK_REGISTERED: {
+        processId: ProcessID;
+        callback: (input: string) => void;
+    };
+    CHILD_PROCESS_OUTPUT_CALLBACK_REGISTERED: {
+        parentProcessId: ProcessID;
+        callback: (childProcessId: ProcessID, output: string) => void;
+    };
+    CHILD_PROCESS_EXIT_CALLBACK_REGISTERED: {
+        parentProcessId: ProcessID;
+        callback: (childProcessId: ProcessID) => void;
+    }
+    CHILD_PROCESS_ERROR_CALLBACK_REGISTERED: {
+        parentProcessId: ProcessID;
+        callback: (childProcessId: ProcessID, error: string) => void;
+    }
+    CHILD_PROCESS_LAUNCH_ERROR_CALLBACK_REGISTERED: {
+        parentProcessId: ProcessID;
+        callback: (childProcessId: ProcessID) => void;
+    }
+    SET_WINDOW_TITLE: {
+        processId: ProcessID;
+        title: string;
+    }
 };
 
 export type Payload<A extends Action> = ActionPayloadMap[A];

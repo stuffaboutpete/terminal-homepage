@@ -3,6 +3,6 @@ import Dispatch from './dispatch';
 import Action from './action';
 import Payload from './payload';
 
-type Subscriber = <A extends Action>(action: A, payload: Payload<A>, state: State, previousState: State, dispatch: Dispatch) => void;
+type Subscriber = <A extends Action>(action: A, payload: Payload<A>, state: State, previousState: State, dispatch: Dispatch, getState: () => State) => void;
 
 export default Subscriber;

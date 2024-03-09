@@ -1,24 +1,27 @@
 import React from 'react';
-import ApplicationToolkit from '../../model/application/type/application-toolkit';
+import WindowToolkit from '../../model/application/type/window-toolkit';
 import State from './state';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import './terminal.scss';
 
-const Terminal = ({ globalState, applicationState, setState, executeCommand }: ApplicationToolkit<State>) => {
+const Terminal = ({ globalState, applicationState, setState, messageApplication }: WindowToolkit<State>) => {
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
     React.useEffect(
         () => inputRef.current?.focus(),
-        [globalState.isProcessingCommand]
+        [applicationState]
     );
 
-    // React.useLayoutEffect(
-    //     () => { document.querySelector('.scrollable').scrollTop = 99999 },
-    //     [props.input, props.history, props.isProcessingInput]
-    // );
+    React.useLayoutEffect(
+        () => {
+            const scrollContainer = document.querySelector('.scrollable')
+            if (scrollContainer) scrollContainer.scrollTop = 99999;
+        },
+        [applicationState.input, applicationState.history]
+    );
 
-    const commandHistory = globalState.commandHistory.filter(historyEntry => historyEntry.input !== 'terminal');
+    const commandHistory = applicationState.commandHistory;
 
     return (
         <div
@@ -33,17 +36,17 @@ const Terminal = ({ globalState, applicationState, setState, executeCommand }: A
                                 <FontAwesomeIcon icon={faChevronRight} />
                                 <pre>{entry.input}</pre>
                             </div>
-                            {entry.output && (
+                            {entry.lastOutput && (
                                 <pre>
                                     {entry.error && (
                                         <span className="terminal-historyError">Error:{' '}</span>
                                     )}
-                                    {entry.output.split(/(?=\$[A-Z]+\$)/g).map((part, index) => {
+                                    {entry.lastOutput.split(/(?=\$[A-Z]+\$)/g).map((part, index) => {
                                         // TODO Too much logic
                                         const match = part.match(/\$([A-Z]+)\$((?:.|\n)+)/);
                                         return (match)
                                             ? <span key={index} className={`terminal-coloredText--${match[1].toLowerCase()}`}>{match[2]}</span>
-                                            : <span className="terminal-coloredText--white">{part}</span>;
+                                            : <span key={index} className="terminal-coloredText--white">{part}</span>;
                                     })}
                                 </pre>
                             )}
@@ -51,12 +54,7 @@ const Terminal = ({ globalState, applicationState, setState, executeCommand }: A
                     ))}
                 </div>
             )}
-            {globalState.isProcessingCommand && (
-                <div className="terminal-processing">
-                    <pre>Processing...</pre>
-                </div>
-            )}
-            {!globalState.isProcessingCommand && (
+            {!applicationState.activeProcess && (
                 <div className="terminal-input">
                     <FontAwesomeIcon icon={faChevronRight} />
                     <textarea
@@ -79,15 +77,7 @@ const Terminal = ({ globalState, applicationState, setState, executeCommand }: A
                         onKeyDown={event => {
                             if (event.key === 'Enter') {
                                 event.preventDefault();
-                                executeCommand(applicationState.input);
-                                setState({
-                                    input: '',
-                                    history: [
-                                        ...applicationState.history,
-                                        event.currentTarget.value
-                                    ],
-                                    historyPointer: applicationState.history.length
-                                });
+                                messageApplication({ command: applicationState.input });
                             }
                             if (event.key === 'ArrowUp') {
                                 event.preventDefault();

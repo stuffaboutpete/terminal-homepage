@@ -4,42 +4,53 @@ import Dispatch from '../state/type/dispatch';
 import Window from './window';
 import applications from '../application';
 import fromList from '../model/application/from-list';
-import applicationToolkit from '../model/application/application-toolkit';
+import windowToolkit from '../model/application/window-toolkit';
+import isProcessLaunchFailure from '../model/application/is-process-launch-failure';
 import './main.scss';
 
 interface Props {
     state: State;
+    getState: () => State;
     dispatch: Dispatch;
 }
 
-const Main = ({ state, dispatch }: Props) => (
+// TODO Only do getState once
+const Main = ({ getState, dispatch }: Props) => (
     <main
         className="main"
         onMouseMove={event => {
-            if (!state.windowDrag) return;
+            if (!getState().windowDrag) return;
             dispatch('WINDOW_DRAG', {
                 x: event.clientX,
                 y: event.clientY
             });
         }}
         onMouseUp={() => {
-            if (!state.windowDrag) return;
+            if (!getState().windowDrag) return;
             dispatch('WINDOW_TOUCH_END', undefined)
         }}
     >
-        {Object.keys(state.applicationInstances).map(applicationName => {
-            const instance = state.applicationInstances[applicationName];
-            const window = instance.window;
-            const canvas = instance.canvasActive;
+        {Object.keys(getState().processes).map(processId => {
+            const process = getState().processes[processId];
 
-            const application = fromList(applications, applicationName);
-            if (application === undefined) return;
+            if (isProcessLaunchFailure(process)) return;
 
-            const toolkit = applicationToolkit(state, dispatch, applicationName);
-            const WindowContent = application.renderWindow;
+            const window = process.window;
+            const canvas = process.canvasActive;
 
+            const application = fromList(applications, process.name)!;
+
+            const toolkit = windowToolkit(getState, dispatch, processId);
+            const WindowContent = application.windowRenderer;
+
+            const helpButtonCallback = getState().callbacks.find(callback => {
+                if (callback.event !== 'processHelpButton') return false;
+                return (callback.processId === processId) ? true : false;
+            });
+
+            // TODO Why don't we just bail early if there's no window?
             return (
-                <Fragment key={applicationName}>
+                <Fragment key={processId}>
                     {window && WindowContent && (
                         <div
                             className="main-translationWrapper"
@@ -50,7 +61,7 @@ const Main = ({ state, dispatch }: Props) => (
                                 zIndex: window.zIndex
                             }}
                             onMouseDown={event => dispatch('WINDOW_TOUCH', {
-                                applicationName,
+                                processId,
                                 position: {
                                     x: event.clientX,
                                     y: event.clientY
@@ -58,17 +69,17 @@ const Main = ({ state, dispatch }: Props) => (
                             })}
                         >
                             <Window
-                                title={application.windowTitle ? application.windowTitle(instance.state) : applicationName}
-                                theme={state.theme}
-                                onClose={applicationName !== 'terminal' ? () => dispatch('CLOSE_WINDOW', applicationName) : undefined}
-                                onHelp={application.onHelpButton ? () => application.onHelpButton(toolkit) : undefined}
+                                title={window.title}
+                                theme={getState().theme}
+                                onClose={processId !== '1' ? () => dispatch('DEACTIVATE_WINDOW', processId) : undefined}
+                                onHelp={helpButtonCallback ? () => dispatch('PROCESS_HELP_BUTTON', processId) : undefined}
                             >
                                 <WindowContent {...toolkit} />
                             </Window>
                         </div>
                     )}
                     {canvas && (
-                        <canvas id={applicationName}></canvas>
+                        <canvas id={`a${processId}`}></canvas>
                     )}
                 </Fragment>
             );

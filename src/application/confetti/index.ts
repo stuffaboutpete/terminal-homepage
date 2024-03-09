@@ -6,15 +6,13 @@ import render from './render';
 const confetti: Application<{}, State> = {
     name: 'confetti',
     defaultCanvasState: defaultState,
-    execute: async (args, { activateCanvas, setCanvasState }) => {
+    canvasRenderer: render,
+    initialize: async (args, { activateCanvas, setCanvasState, output, detach }) => {
         activateCanvas();
         setCanvasState({ futureParticleCount: 30 })
-        return {
-            output: '🎉 $PURPLE$Enjoy!',
-            error: false
-        };
-    },
-    renderCanvas: render
+        output('🎉 $PURPLE$Enjoy!');
+        detach();
+    }
 };
 
 export default confetti;

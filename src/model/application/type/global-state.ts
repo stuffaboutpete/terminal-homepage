@@ -15,12 +15,9 @@ interface Rectange {
 
 interface GlobalState {
     files: State['files'];
-    currentDirectory: State['currentDirectory'];
     theme: State['theme'];
     backgroundImage: State['backgroundImage'];
     browserSize: State['browserSize'];
-    isProcessingCommand: State['isProcessingCommand'];
-    commandHistory: State['commandHistory'];
     windowPositions: Rectange[];
 }
 

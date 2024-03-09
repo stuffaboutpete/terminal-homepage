@@ -8,32 +8,34 @@ const file: Application<State, {}> = {
     name: 'file',
     aliases: ['file'],
     defaultState,
-    execute: async (args, { globalState, setState, openWindow }) => {
-        let output: string[] = [];
-        let error = false;
-
-        const targetFile = args[0];
+    windowRenderer: Root,
+    initialize: async (args, { globalState, setState, activateWindow, output, error, detach, onApplicationStateChange, setWindowTitle }) => {
+        let outputStrings: string[] = [];
 
         if (args.length === 0) {
-            output.push('Please provide a file to open');
-            error = true;
+            error('Please provide a file to open');
+            return;
         }
 
         if (args.length > 1) {
-            output.push(`$BLUE$Ignoring arguments: $YELLOW$${args.slice(1).join('$DEFAULT$,$YELLOW$ ')}$DEFAULT$`, '');
+            outputStrings.push(`$BLUE$Ignoring arguments: $YELLOW$${args.slice(1).join('$DEFAULT$,$YELLOW$ ')}$DEFAULT$`, '');
         }
 
+        const targetFile = args[0];
+
         if (args.length >= 1) {
-            if (!isFile(globalState.files)(targetFile)) {
-                output.push(`$RED$File does not exist: $YELLOW$${targetFile}`);
-                error = true;
+            if (!isFile(globalState().files)(targetFile)) {
+                outputStrings.push(`$RED$File does not exist: $YELLOW$${targetFile}`);
+                error(outputStrings.join('\n'));
+                return;
             } else {
+                activateWindow();
+                onApplicationStateChange(state => setWindowTitle(state.fileName || ''));
                 setState({
                     fileName: targetFile,
                     fileContents: undefined
                 });
-                openWindow();
-                output.push(`$GREEN$Opening file: $YELLOW$${targetFile}`);
+                outputStrings.push(`$GREEN$Opening file: $YELLOW$${targetFile}`);
                 const response = fetch(`${process.env.SOURCE_CODE_PREVIEW_URL}${targetFile}`);
                 response.then(response => {
                     response.text().then(fileContents => {
@@ -46,14 +48,9 @@ const file: Application<State, {}> = {
             }
         }
 
-        return {
-            output: output.join('\n'),
-            error
-        };
-    },
-    renderWindow: Root,
-    windowTitle: state => (state.fileName === undefined) ? '' : state.fileName
-    
+        output(outputStrings.join('\n'));
+        detach();
+    }
 };
 
 export default file;

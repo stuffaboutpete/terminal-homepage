@@ -4,7 +4,7 @@ import isDirectory from '../../model/file-system/is-directory';
 const changeDirectory: Application<{}, {}> = {
     name: 'change-directory',
     aliases: ['cd'],
-    execute: async (args, { globalState, changeDirectory }) => {
+    initialize: async (args, { globalState, changeDirectory }) => {
         let output: string[] = [];
         let error = false;
 

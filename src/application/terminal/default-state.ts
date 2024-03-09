@@ -4,7 +4,9 @@ const defaultState: State = {
     input: '',
     history: [],
     historyPointer: -1,
-    currentDirectory: '/'
+    currentDirectory: '/',
+    activeProcess: false,
+    commandHistory: []
 };
 
 export default defaultState;

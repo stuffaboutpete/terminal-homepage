@@ -4,7 +4,6 @@ import files from '../directory-structure';
 const defaultState: State = {
     windowDrag: undefined,
     files,
-    currentDirectory: '/',
     theme: 'dark',
     backgroundImage: 986,
     fullScreen: false,
@@ -12,9 +11,8 @@ const defaultState: State = {
         width: 0,
         height: 0
     },
-    isProcessingCommand: false,
-    applicationInstances: {},
-    commandHistory: [],
+    processes: {},
+    callbacks: []
 };
 
 export default defaultState;

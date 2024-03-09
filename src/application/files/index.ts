@@ -7,25 +7,33 @@ import defaultState from './default-state';
 const files: Application<State, {}> = {
     name: 'files',
     defaultState: defaultState,
-    execute: async (args, { openWindow, setState, globalState }) => {
-        let targetDirectory = globalState.currentDirectory;
-
-        if (args.length > 0) {
-            if (isDirectory(globalState.files)(args[0])) {
-                targetDirectory = args[0];
-            }
+    windowRenderer: Root,
+    initialize: async (args, { output, error, detach, activateWindow, setState, globalState, onApplicationStateChange, setWindowTitle }) => {
+        if (args.length === 0) {
+            error('Please provide a directory');
+            return;
         }
 
-        setState({ currentDirectory: targetDirectory });
-        openWindow();
+        if (args.length > 1) {
+            error('Please provide a single directory');
+            return;
+        }
 
-        return {
-            output: `$GREEN$Opening files $DEFAULT$at directory: $YELLOW$${targetDirectory}`,
-            error: false
-        };
-    },
-    renderWindow: Root,
-    windowTitle: () => 'Files'
+        const targetDirectory = args[0];
+
+        if (!isDirectory(globalState().files)(targetDirectory)) {
+            // TODO More helpful error
+            error('Please provide a valid directory');
+            return;
+        }
+
+        activateWindow('Files');
+        onApplicationStateChange(state => setWindowTitle(`Files${'\u00A0'}${'\u00A0'}-${'\u00A0'}${'\u00A0'}${state.currentDirectory}`));
+        setState({ currentDirectory: targetDirectory });
+
+        output(`$GREEN$Opening files $DEFAULT$at directory: $YELLOW$${targetDirectory}`);
+        detach();
+    }
 };
 
 export default files;

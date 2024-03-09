@@ -4,7 +4,7 @@ import isFile from '../../model/file-system/is-file';
 const viewFile: Application<{}, {}> = {
     name: 'view-file',
     aliases: ['vf', 'cat'],
-    execute: async (args, { globalState }) => {
+    initialize: async (args, { globalState }) => {
         let output: string[] = [];
         let error = false;
 

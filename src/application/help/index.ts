@@ -2,7 +2,7 @@ import Application from '../../model/application/type/application';
 
 const help: Application<{}, {}> = {
     name: 'help',
-    execute: async () => {
+    initialize: async (args, { output, exit }) => {
         const startOutput = [
             '🙂 $BLUE$No problem...',
             '',
@@ -33,10 +33,8 @@ const help: Application<{}, {}> = {
             const aliasesOutput = aliases.map(alias => `$DEFAULT$or $YELLOW$${alias}`).join(' ');
             return out + `$YELLOW$${command}${aliases.length > 0 ? `$DEFAULT$ (${aliasesOutput}$DEFAULT$)` : ''}\n`;
         }, '');
-        return {
-            output: startOutput + commandOutput,
-            error: false
-        };
+        output(startOutput + commandOutput);
+        exit();
     }
 };
 

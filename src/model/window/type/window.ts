@@ -1,4 +1,5 @@
 interface Window {
+    title?: string;
     x: number;
     y: number;
     width: number;

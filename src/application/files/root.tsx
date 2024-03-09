@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFileCode, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import ApplicationToolkit from '../../model/application/type/application-toolkit';
+import WindowToolkit from '../../model/application/type/window-toolkit';
 import State from './state';
 import directoriesInDirectory from '../../model/file-system/directories-in-directory';
 import filesInDirectory from '../../model/file-system/files-in-directory';
@@ -9,7 +9,7 @@ import parentDirectories from '../../model/file-system/parent-directories';
 import directoryName from '../../model/file-system/directory-name';
 import './root.scss';
 
-const Root = ({ applicationState, globalState, executeCommand, setState }: ApplicationToolkit<State>) => {
+const Root = ({ applicationState, globalState, executeCommand, setState }: WindowToolkit<State>) => {
     const currentDirectory = applicationState.currentDirectory;
     const directories = directoriesInDirectory(globalState.files)(currentDirectory);
     const files = filesInDirectory(globalState.files)(currentDirectory);

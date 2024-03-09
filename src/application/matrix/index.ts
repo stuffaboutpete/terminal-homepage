@@ -3,15 +3,12 @@ import Root from './root';
 
 const matrix: Application<{}, {}> = {
     name: 'matrix',
-    execute: async (args, { openWindow }) => {
-        openWindow();
-        return {
-            output: '$GREEN$You chose the $RED$red$GREEN$ pill.',
-            error: false
-        };
-    },
-    renderWindow: Root,
-    windowTitle: () => 'Matrix'
+    windowRenderer: Root,
+    initialize: async (args, { activateWindow, output, detach }) => {
+        output('$GREEN$You chose the $RED$red$GREEN$ pill.');
+        activateWindow('Matrix');
+        detach();
+    }
 };
 
 export default matrix;

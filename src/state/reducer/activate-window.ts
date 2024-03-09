@@ -1,12 +1,16 @@
 import actionReducer from '../action-reducer';
+import isProcess from '../../model/application/is-process';
+import Process from '../../model/application/type/process';
 
-export default actionReducer('OPEN_WINDOW', (state, payload) => {
-    const application = state.applicationInstances[payload];
+export default actionReducer('ACTIVATE_WINDOW', (state, payload) => {
+    const { processId, title } = payload;
+    const process = state.processes[processId] as Process;
 
     // TODO These belongs in model somewhere...
 
-    const windows = Object.values(state.applicationInstances)
-        .map(application => application.window)
+    const windows = Object.values(state.processes)
+        .filter(isProcess)
+        .map(process => process.window)
         .filter(window => window !== undefined);
 
     const highestZIndex = Math.max(0, ...windows.map(window => {
@@ -21,7 +25,7 @@ export default actionReducer('OPEN_WINDOW', (state, payload) => {
         })
         .pop();
 
-    if (!application.window) {
+    if (!process.window) {
         const widthMargin = state.browserSize.width / 5;
         const heightMargin = state.browserSize.height / 5;
         const width = Math.min(state.browserSize.width - widthMargin, 920);
@@ -34,14 +38,17 @@ export default actionReducer('OPEN_WINDOW', (state, payload) => {
             y += 40;
         }
 
-        application.window = {
+        process.window = {
             x,
             y,
             width,
             height,
             zIndex: 0
         };
+
     }
 
-    application.window.zIndex = highestZIndex + 1;
+    process.window.zIndex = highestZIndex + 1;
+
+    if (title) process.window.title = title;
 });
